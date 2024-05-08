@@ -24,15 +24,15 @@ End Sub
 
 ' Adding  a new element to the list
 ' When the array size is reached,it doubles in size
- Public Sub add(ByVal item As Variant)
-'    pointer = 0
+Public Sub add(ByVal item As Variant)
     If pointer = UBound(arr) Then
         Call resise(UBound(arr) * 2)
     End If
     arr(pointer) = item
     pointer = pointer + 1
- End Sub
- Public Sub remove(ByVal index As Integer)
+End Sub
+
+Public Sub remove(ByVal index As Integer)
     Dim i As Integer
     For i = index To pointer
         arr(i) = arr(i + 1)
@@ -42,7 +42,7 @@ End Sub
     If UBound(arr) > INIT_SIZE And pointer < UBound(arr) / CUT_RATE Then
         Call resise(UBound(arr) / 2)
     End If
- End Sub
+End Sub
   
 Private Sub resise(ByVal newLenght1 As Integer)
     Dim newArr() As Variant
@@ -74,9 +74,7 @@ Public Property Get GetArray(Optional ByRef direction As sortArray = 0) As Varia
         myArr(i) = arr(i)
     Next i
     If direction <> NoSort Then Call quickSort(myArr, direction)
-    
     GetArray = myArr
-    
 End Property
 
 Public Property Get GetIndex(ByVal text As String) As Integer
@@ -176,26 +174,21 @@ End Function
 
     
 
-    Private Function binarySearch(ByRef arr As Variant, ByVal value As Variant, ByVal min As Integer, ByVal max As Integer) As Integer
-        If max < min Then
-            binarySearch = -1
-            Exit Function
-        End If
-        
-        Dim middle As Integer: middle = (min + max) / 2
-       
-
-        If arr(middle) = value Then
-            binarySearch = middle
-             Exit Function
-       
-        ElseIf arr(middle) < value Then
-        
-           binarySearch = binarySearch(arr, value, middle + 1, max)
-        
-        Else
-           binarySearch = binarySearch(arr, value, min, middle - 1)
-        End If
-
+Private Function binarySearch(ByRef arr As Variant, ByVal value As Variant, ByVal min As Integer, ByVal max As Integer) As Integer
     
+    If max < min Then
+        binarySearch = -1
+        Exit Function
+    End If
+        
+    Dim middle As Integer: middle = (min + max) / 2
+
+    If arr(middle) = value Then
+        binarySearch = middle
+        Exit Function
+    ElseIf arr(middle) < value Then
+        binarySearch = binarySearch(arr, value, middle + 1, max)
+    Else
+        binarySearch = binarySearch(arr, value, min, middle - 1)
+    End If
  End Function
