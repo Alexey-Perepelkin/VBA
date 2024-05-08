@@ -12,6 +12,12 @@ Private Const CUT_RATE = 4
 Private arr() As Variant
 Private pointer As Integer
 Private myArr As Variant
+Public Enum sortArray
+    NoSort = 0
+    SotrAscending = 1
+    SortDescending = 2
+End Enum
+
 Private Sub Class_Initialize()
     ReDim arr(INIT_SIZE) As Variant
 End Sub
@@ -60,28 +66,36 @@ Else
 End If
 End Function
 
+Public Property Get GetArray(Optional ByRef direction As sortArray = 0) As Variant
 
-
-
-Public Property Get GetArray() As Variant
     ReDim myArr(size)
     Dim i As Integer
     For i = 0 To size - 1
         myArr(i) = arr(i)
     Next i
+    If direction <> NoSort Then Call quickSort(myArr, direction)
+    
     GetArray = myArr
+    
 End Property
 
+Public Property Get GetIndex(ByVal text As String) As Integer
+    Dim index As Integer
+    
+    
+    GetIndex = index
+End Property
+Private Sub quickSort(ByRef arr As Variant, ByRef direction As sortArray)
 
-Private Sub quickSort(ByRef arr As Variant)
-
-    Call quickSort1(arr, 0, UBound(arr) - 1)
+    If direction = SotrAscending Then
+        Call quickSortAscending(arr, 0, UBound(arr) - 1)
+    ElseIf direction = SortDescending Then
+        Call quickSortDescending(arr, 0, UBound(arr) - 1)
+    End If
 
 End Sub
 
-
-
-Private Sub quickSort1(ByRef arr As Variant, ByVal theStart As Integer, ByVal theEnd As Integer)
+Private Sub quickSortAscending(ByRef arr As Variant, ByVal theStart As Integer, ByVal theEnd As Integer)
  
     Dim theLeft As Integer: theLeft = theStart
     Dim theRight As Integer: theRight = theEnd
@@ -110,12 +124,78 @@ Private Sub quickSort1(ByRef arr As Variant, ByVal theStart As Integer, ByVal th
     Loop While theLeft <= theRight
 
         If theLeft < theEnd Then
-           Call quickSort1(arr, theLeft, theEnd)
+           Call quickSortAscending(arr, theLeft, theEnd)
         End If
 
         If theStart < theRight Then
-            Call quickSort1(arr, theStart, theRight)
+            Call quickSortAscending(arr, theStart, theRight)
         End If
 End Sub
 
 
+Private Sub quickSortDescending(ByRef arr As Variant, ByVal theStart As Integer, ByVal theEnd As Integer)
+ 
+    Dim theLeft As Integer: theLeft = theStart
+    Dim theRight As Integer: theRight = theEnd
+    Dim middle As String: middle = arr((theStart + theEnd) / 2)
+    Dim buf As String
+ 
+    Do
+        Do While arr(theLeft) > middle
+            theLeft = theLeft + 1
+        Loop
+        
+        Do While arr(theRight) < middle
+            theRight = theRight - 1
+        Loop
+        
+        If theLeft <= theRight Then
+            If theLeft < theRight Then
+                buf = arr(theLeft)
+                arr(theLeft) = arr(theRight)
+                arr(theRight) = buf
+            End If
+            theLeft = theLeft + 1
+            theRight = theRight - 1
+        End If
+        
+    Loop While theLeft <= theRight
+
+        If theLeft < theEnd Then
+           Call quickSortDescending(arr, theLeft, theEnd)
+        End If
+
+        If theStart < theRight Then
+            Call quickSortDescending(arr, theStart, theRight)
+        End If
+End Sub
+
+Public Function binarySearch1(ByVal value As Variant) As Integer
+    binarySearch1 = binarySearch(GetArray(SotrAscending), value, 0, UBound(GetArray(SotrAscending)) - 1)
+End Function
+
+    
+
+    Private Function binarySearch(ByRef arr As Variant, ByVal value As Variant, ByVal min As Integer, ByVal max As Integer) As Integer
+        If max < min Then
+            binarySearch = -1
+            Exit Function
+        End If
+        
+        Dim middle As Integer: middle = (min + max) / 2
+       
+
+        If arr(middle) = value Then
+            binarySearch = middle
+             Exit Function
+       
+        ElseIf arr(middle) < value Then
+        
+           binarySearch = binarySearch(arr, value, middle + 1, max)
+        
+        Else
+           binarySearch = binarySearch(arr, value, min, middle - 1)
+        End If
+
+    
+ End Function
